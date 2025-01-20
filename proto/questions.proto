@@ -8,6 +8,7 @@ service Questions {
   rpc Add (AddRequest) returns (AddResponse) {} // This is to test the gRPC connection
   rpc GetQuestionTypes (GetQuestionTypesRequest) returns (GetQuestionTypesResponse) {}
   rpc SearchQuestion (SearchQuestionRequest) returns (SearchQuestionResponse) {}
+  rpc SearchSuggestions (SearchSuggestionsRequest) returns (SearchSuggestionsResponse) {}
 }
 
 // Request message containing two numbers to add
@@ -87,6 +88,14 @@ message SearchQuestionRequest {
 message SearchQuestionResponse {
   repeated Question questions = 1;
   PaginationInfo paginationInfo = 2;
+}
+
+message SearchSuggestionsRequest {
+  string query = 1;
+}
+
+message SearchSuggestionsResponse {
+  repeated string suggestions = 1;
 }
 
 // Pagination info for response

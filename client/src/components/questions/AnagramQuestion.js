@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BiText, BiCheck, BiShuffle } from "react-icons/bi";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import { StrictModeDroppable } from "./StrictModeDroppable";
 import shuffleArray from "./shuffleArray";
 
 function AnagramQuestion({ question }) {
   const [blocks, setBlocks] = useState(() => {
     const initialBlocks = question.getBlocksList();
-    return shuffleArray(initialBlocks); // Shuffle the blocks on initialization
+    return shuffleArray(initialBlocks);
   });
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [enabled, setEnabled] = useState(false);
+  const [draggedItem, setDraggedItem] = useState(null);
 
-  useEffect(() => {
-    // This is needed for react-beautiful-dnd to work in StrictMode
-    const animation = requestAnimationFrame(() => {
-      setEnabled(true);
-    });
+  const handleDragStart = (e, index) => {
+    setDraggedItem(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.target.style.opacity = "0.5";
+  };
 
-    return () => {
-      cancelAnimationFrame(animation);
-      setEnabled(false);
-    };
-  }, []);
+  const handleDragEnd = (e) => {
+    e.target.style.opacity = "1";
+    setDraggedItem(null);
+  };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedItem === null) return;
 
     const items = Array.from(blocks);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const draggedItemContent = items[draggedItem];
+    items.splice(draggedItem, 1);
+    items.splice(index, 0, draggedItemContent);
 
     setBlocks(items);
+    setDraggedItem(index);
   };
 
   const checkAnswer = () => {
@@ -48,7 +48,8 @@ function AnagramQuestion({ question }) {
   };
 
   const resetBlocks = () => {
-    setBlocks(question.getBlocksList());
+    const shuffledBlocks = shuffleArray(question.getBlocksList());
+    setBlocks(shuffledBlocks);
     setIsChecked(false);
     setIsCorrect(false);
   };
@@ -68,63 +69,36 @@ function AnagramQuestion({ question }) {
         </button>
       </div>
 
-      {enabled && (
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <StrictModeDroppable droppableId="blocks">
-            {(provided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className="space-y-3"
-              >
-                {blocks.map((block, index) => (
-                  <Draggable
-                    key={block.getText() + index}
-                    draggableId={block.getText() + index}
-                    index={index}
-                    isDragDisabled={isChecked}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className={`bg-white border rounded-lg p-4 transition-all ${
-                          snapshot.isDragging
-                            ? "shadow-lg border-primary-500"
-                            : "border-secondary-200"
-                        } ${
-                          isChecked
-                            ? block.getIsanswer() &&
-                              index === blocks.findIndex((b) => b.getIsanswer())
-                              ? "border-success-500 bg-success-50"
-                              : "border-error-500 bg-error-50"
-                            : "hover:border-primary-500 cursor-move"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <BiText className="text-secondary-400" />
-                            <span className="text-secondary-700">
-                              {block.getText()}
-                            </span>
-                          </div>
-                          {!isChecked && (
-                            <div className="text-secondary-400 text-sm">
-                              Drag to reorder
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
+      <div className="space-y-3">
+        {blocks.map((block, index) => (
+          <div
+            key={block.getText() + index}
+            draggable={!isChecked}
+            onDragStart={(e) => handleDragStart(e, index)}
+            onDragEnd={handleDragEnd}
+            onDragOver={(e) => handleDragOver(e, index)}
+            className={`bg-white border rounded-lg p-4 transition-all ${
+              isChecked
+                ? isCorrect
+                  ? "border-success-500 bg-success-50"
+                  : "border-error-500 bg-error-50"
+                : "border-secondary-200 hover:border-primary-500 cursor-move"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BiText className="text-secondary-400" />
+                <span className="text-secondary-700">{block.getText()}</span>
               </div>
-            )}
-          </StrictModeDroppable>
-        </DragDropContext>
-      )}
+              {!isChecked && (
+                <div className="text-secondary-400 text-sm">
+                  Drag to reorder
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="flex justify-center mt-6">
         {!isChecked ? (

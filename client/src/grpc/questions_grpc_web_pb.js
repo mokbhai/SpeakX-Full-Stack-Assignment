@@ -257,5 +257,66 @@ proto.Questions.QuestionsPromiseClient.prototype.searchQuestion =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Questions.SearchSuggestionsRequest,
+ *   !proto.Questions.SearchSuggestionsResponse>}
+ */
+const methodDescriptor_Questions_SearchSuggestions = new grpc.web.MethodDescriptor(
+  '/Questions.Questions/SearchSuggestions',
+  grpc.web.MethodType.UNARY,
+  proto.Questions.SearchSuggestionsRequest,
+  proto.Questions.SearchSuggestionsResponse,
+  /**
+   * @param {!proto.Questions.SearchSuggestionsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.Questions.SearchSuggestionsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Questions.SearchSuggestionsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.Questions.SearchSuggestionsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.Questions.SearchSuggestionsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.Questions.QuestionsClient.prototype.searchSuggestions =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Questions.Questions/SearchSuggestions',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_SearchSuggestions,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Questions.SearchSuggestionsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.Questions.SearchSuggestionsResponse>}
+ *     Promise that resolves to the response
+ */
+proto.Questions.QuestionsPromiseClient.prototype.searchSuggestions =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Questions.Questions/SearchSuggestions',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_SearchSuggestions);
+};
+
+
 module.exports = proto.Questions;
 

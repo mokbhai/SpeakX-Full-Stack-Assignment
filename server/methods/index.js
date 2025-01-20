@@ -114,6 +114,14 @@ async function searchQuestion(call, callback) {
   }
 }
 
+async function searchSuggestions(call, callback) {
+  const { query } = call.request;
+  const suggestions = await QuestionModel.find({
+    title: { $regex: query, $options: "i" },
+  });
+  callback(null, { suggestions });
+}
+
 // get by file
 // const analyser = new AnalyseData();
 // await analyser.initialize();
@@ -143,4 +151,5 @@ export default {
   add,
   getQuestionTypes,
   searchQuestion,
+  searchSuggestions,
 };
