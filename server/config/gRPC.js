@@ -1,7 +1,6 @@
 import grpc from "@grpc/grpc-js";
 import protoLoader from "@grpc/proto-loader";
 import path from "path";
-import grpcMethods from "../methods/index.js";
 
 const PROTO_PATH = path.resolve("/proto/questions.proto");
 
@@ -18,7 +17,7 @@ const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const questionsProto = protoDescriptor.Questions;
 
 // Create gRPC server
-function startServer() {
+function startServer(grpcMethods) {
   const server = new grpc.Server();
   server.addService(questionsProto.Questions.service, {
     ...grpcMethods,
