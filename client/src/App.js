@@ -5,6 +5,7 @@ import QuestionCard from "./components/questions/QuestionCard";
 import Pagination from "./components/common/Pagination";
 import { BiSearch, BiFilterAlt } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { useSearchParams } from "react-router-dom";
 
 function App() {
   const [questionTypes, setQuestionTypes] = useState([]);
@@ -19,16 +20,23 @@ function App() {
     hasNextPage: false,
     hasPreviousPage: false,
   });
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    // Get question types
-    QuestionsService.getQuestionTypes().then((response) => {
-      const types = response.getQuestiontypesList();
-      setQuestionTypes(types);
-    });
+    setQuestionTypes(Object.keys(QuestionType));
+    // Get initial filters from URL
+    const typeFromUrl = searchParams.get("type") || "";
+    const titleFromUrl = searchParams.get("title") || "";
+    const pageFromUrl = parseInt(searchParams.get("page")) || 0;
+    const pageSizeFromUrl =
+      parseInt(searchParams.get("pageSize")) || pagination.itemsPerPage;
 
-    // Initial search
-    fetchQuestions(); // eslint-disable-next-line
+    setSelectedType(typeFromUrl);
+    setSearchText(titleFromUrl);
+
+    // Initial search with URL parameters
+    fetchQuestions(typeFromUrl, titleFromUrl, pageFromUrl, pageSizeFromUrl);
+    // eslint-disable-next-line
   }, []);
 
   const fetchQuestions = (
@@ -64,13 +72,29 @@ function App() {
       });
   };
 
+  const updateUrlParams = (
+    type,
+    title,
+    page = 0,
+    pageSize = pagination.itemsPerPage
+  ) => {
+    const params = new URLSearchParams();
+    if (type) params.set("type", type);
+    if (title) params.set("title", title);
+    if (page > 0) params.set("page", page.toString());
+    if (pageSize !== 10) params.set("pageSize", pageSize.toString());
+    setSearchParams(params);
+  };
+
   const handleSearch = () => {
+    updateUrlParams(selectedType, searchText);
     fetchQuestions(selectedType, searchText);
   };
 
   const handleClear = () => {
     setSelectedType("");
     setSearchText("");
+    setSearchParams(new URLSearchParams());
     fetchQuestions();
   };
 
@@ -81,10 +105,12 @@ function App() {
   };
 
   const handlePageChange = (newPage) => {
+    updateUrlParams(selectedType, searchText, newPage, pagination.itemsPerPage);
     fetchQuestions(selectedType, searchText, newPage);
   };
 
   const handlePageSizeChange = (newSize) => {
+    updateUrlParams(selectedType, searchText, 0, newSize);
     fetchQuestions(selectedType, searchText, 0, newSize);
   };
 
@@ -110,7 +136,6 @@ function App() {
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
                 >
-                  <option value="">All Types</option>
                   {questionTypes.map((type) => (
                     <option key={type} value={type}>
                       {type}

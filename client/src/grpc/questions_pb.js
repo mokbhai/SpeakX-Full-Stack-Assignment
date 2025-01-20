@@ -2487,7 +2487,7 @@ proto.Questions.PaginationInfo.prototype.setHaspreviouspage = function(value) {
  * @enum {number}
  */
 proto.Questions.QuestionType = {
-  UNKNOWN: 0,
+  ALL: 0,
   ANAGRAM: 1,
   MCQ: 2,
   READ_ALONG: 3,

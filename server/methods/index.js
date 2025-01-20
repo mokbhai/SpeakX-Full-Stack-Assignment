@@ -1,6 +1,6 @@
 import QuestionModel from "../schemas/questionSchema.js";
 import { QuestionType, AnagramType } from "../schemas/questionSchema.js";
-import AnalyseData from "../seed/analyse.js";
+// import AnalyseData from "../seed/analyse.js";
 
 // Implement the Add RPC method
 function add(call, callback) {
@@ -30,7 +30,7 @@ async function searchQuestion(call, callback) {
       // query.$text = { $search: title };
     }
 
-    if (type !== undefined && type !== 0) {
+    if (type !== undefined && type !== 0 && QuestionType[type] !== undefined) {
       query.type = QuestionType[type];
     }
 
