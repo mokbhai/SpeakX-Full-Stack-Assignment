@@ -29,9 +29,10 @@ async function searchQuestion(call, callback) {
     }
 
     if (type !== undefined && type !== 0) {
-      const questionTypes = Object.values(QuestionType);
-      query.type = questionTypes[type];
+      query.type = QuestionType[type];
     }
+
+    // console.log(query);
 
     // Use aggregation pipeline for efficient querying and pagination
     const aggregationPipeline = [

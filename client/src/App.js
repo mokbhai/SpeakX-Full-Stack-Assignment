@@ -16,7 +16,8 @@ function App() {
 
     // Search questions with pagination
     QuestionsService.searchQuestion({
-      title: "Rearrange the letters to form a word",
+      title: "",
+      type: QuestionType.ANAGRAM,
       pagination: {
         page: 2,
         limit: 10,
