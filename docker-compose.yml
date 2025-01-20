@@ -11,6 +11,8 @@ services:
       - /app/node_modules
     networks:
       - grpc-network
+    env_file:
+      - .env.example
 
   envoy:
     build:

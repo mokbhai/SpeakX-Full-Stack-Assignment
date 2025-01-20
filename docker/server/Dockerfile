@@ -10,4 +10,4 @@ COPY proto ../proto
 
 EXPOSE 50051
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

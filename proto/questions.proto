@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package Questions;
+
+// Questions service definition
+service Questions {
+  // Add method takes two numbers and returns their sum
+  rpc Add (AddRequest) returns (AddResponse) {}
+}
+
+// Request message containing two numbers to add
+message AddRequest {
+  int32 a = 1;
+  int32 b = 2;
+}
+
+// Response message containing the result
+message AddResponse {
+  int32 result = 1;
+} 

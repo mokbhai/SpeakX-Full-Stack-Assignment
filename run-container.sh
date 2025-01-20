@@ -5,7 +5,3 @@
 
 # run the docker compose file
 docker-compose down && docker-compose up --build
-
-# open the client in the browser
-open http://localhost:3000/
-    

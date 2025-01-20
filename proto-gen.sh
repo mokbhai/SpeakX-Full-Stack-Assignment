@@ -15,6 +15,6 @@ GRPC_WEB_PLUGIN_PATH=$(npm root -g)/protoc-gen-grpc-web/bin/protoc-gen-grpc-web
 protoc -I=./proto \
   --js_out=import_style=commonjs:./client/src/grpc \
   --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./client/src/grpc \
-  ./proto/calculator.proto
+  ./proto/questions.proto
 
 echo "Protocol buffer files generated successfully!" 
