@@ -1,6 +1,6 @@
 # SpeakX Placemnet Assignment.
 
-# Setup (2 ways)
+# Setup
 
 ## First setup the .env file
 
@@ -8,7 +8,7 @@ copy the .env.example file and rename it to ./backend/.env
 add mongo uri to the .env file
 or you can use the My default uri from the .env.example file
 
-## 1. Using Docker (how explained [here](https://github.com/mokbhai/SiddhProject/blob/main/NodeJs/gRPC/client-to-server/README_Improved_By_ChatGPT.md))
+## 1. Using Docker-compose (Implementation explained here [here](https://github.com/mokbhai/SiddhProject/blob/main/NodeJs/gRPC/client-to-server/README_Improved_By_ChatGPT.md))
 
 ```bash
 ./run-container.sh
