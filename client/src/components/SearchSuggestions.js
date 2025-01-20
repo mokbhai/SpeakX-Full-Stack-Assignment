@@ -52,7 +52,7 @@ function SearchSuggestions({ query, onSelect }) {
   };
 
   const getQuestionTypeName = (type) => {
-    return QuestionType[type] || "Unknown";
+    return Object.keys(QuestionType)[type] || "Unknown";
   };
 
   if (!showSuggestions || suggestions.length === 0) return null;
@@ -70,6 +70,7 @@ function SearchSuggestions({ query, onSelect }) {
             onClick={() => {
               onSelect?.(suggestion.getTitle());
               setShowSuggestions(false);
+              query = "";
             }}
           >
             <div className="flex items-center justify-between">

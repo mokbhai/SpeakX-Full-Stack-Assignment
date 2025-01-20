@@ -24,10 +24,10 @@ async function searchQuestion(call, callback) {
     const query = {};
     if (title) {
       // Use exact match instead of text search
-      query.title = title;
+      // query.title = title;
       // for index search
       // await QuestionModel.collection.createIndex({ title: "text" });
-      // query.$text = { $search: title };
+      query.title = { $regex: title, $options: "i" };
     }
 
     if (type !== undefined && type !== 0 && QuestionType[type] !== undefined) {
@@ -119,8 +119,10 @@ async function searchSuggestions(call, callback) {
     const { query } = call.request;
     const suggestions = await QuestionModel.find(
       { title: { $regex: query, $options: "i" } },
-      { title: 1, _id: 0, type: 1 } // Only return the title field, exclude _id
+      { title: 1, _id: 0, type: 1 }
     ).limit(2);
+
+    // console.log(suggestions);
 
     callback(null, { suggestions });
   } catch (error) {

@@ -87,9 +87,9 @@ function App() {
     setSearchParams(params);
   };
 
-  const handleSearch = () => {
-    updateUrlParams(selectedType, searchText);
-    fetchQuestions(selectedType, searchText);
+  const handleSearch = (title = searchText) => {
+    updateUrlParams(selectedType, title, 0, pagination.itemsPerPage);
+    fetchQuestions(selectedType, title, 0, pagination.itemsPerPage);
   };
 
   const handleClear = () => {
@@ -176,7 +176,7 @@ function App() {
                 query={searchText}
                 onSelect={(title) => {
                   setSearchText(title);
-                  handleSearch();
+                  handleSearch(title);
                 }}
               />
             </div>
