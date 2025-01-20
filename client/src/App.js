@@ -6,6 +6,7 @@ import Pagination from "./components/common/Pagination";
 import { BiSearch, BiFilterAlt } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
+import SearchSuggestions from "./components/SearchSuggestions";
 
 function App() {
   const [questionTypes, setQuestionTypes] = useState([]);
@@ -146,7 +147,7 @@ function App() {
             </div>
 
             {/* Search Input */}
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <label className="block text-sm font-medium text-secondary-700 mb-1">
                 Search Title
               </label>
@@ -171,6 +172,13 @@ function App() {
                   </button>
                 )}
               </div>
+              <SearchSuggestions
+                query={searchText}
+                onSelect={(title) => {
+                  setSearchText(title);
+                  handleSearch();
+                }}
+              />
             </div>
 
             {/* Action Buttons */}

@@ -94,8 +94,13 @@ message SearchSuggestionsRequest {
   string query = 1;
 }
 
+message Suggestion {
+  string title = 1;
+  QuestionType type = 2;
+}
+
 message SearchSuggestionsResponse {
-  repeated string suggestions = 1;
+  repeated Suggestion suggestions = 1;
 }
 
 // Pagination info for response

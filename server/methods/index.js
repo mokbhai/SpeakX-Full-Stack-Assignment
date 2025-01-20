@@ -115,11 +115,18 @@ async function searchQuestion(call, callback) {
 }
 
 async function searchSuggestions(call, callback) {
-  const { query } = call.request;
-  const suggestions = await QuestionModel.find({
-    title: { $regex: query, $options: "i" },
-  });
-  callback(null, { suggestions });
+  try {
+    const { query } = call.request;
+    const suggestions = await QuestionModel.find(
+      { title: { $regex: query, $options: "i" } },
+      { title: 1, _id: 0, type: 1 } // Only return the title field, exclude _id
+    ).limit(2);
+
+    callback(null, { suggestions });
+  } catch (error) {
+    console.error("Search Suggestions Error:", error);
+    callback(error);
+  }
 }
 
 // get by file

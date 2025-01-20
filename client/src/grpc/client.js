@@ -4,6 +4,7 @@ import {
   GetQuestionTypesRequest,
   SearchQuestionRequest,
   PaginationRequest,
+  SearchSuggestionsRequest,
 } from "./questions_pb";
 
 const client = new QuestionsClient("http://localhost:8080", null, null);
@@ -61,6 +62,20 @@ export const QuestionsService = {
       }
 
       client.searchQuestion(request, {}, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(response);
+        }
+      });
+    });
+  },
+
+  searchSuggestions: (query) => {
+    return new Promise((resolve, reject) => {
+      const request = new SearchSuggestionsRequest();
+      request.setQuery(query);
+      client.searchSuggestions(request, {}, (err, response) => {
         if (err) {
           reject(err);
         } else {
