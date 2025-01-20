@@ -1,0 +1,17 @@
+**/node_modules
+**/backend/.env
+**/frontend/.env
+
+
+**.DS_Store
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
