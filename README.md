@@ -49,19 +49,22 @@ Additionally, you can view the analyzed data output here: [speakx_questions_anal
 
 The steps I followed to create this project are documented in the respective server and frontend folders.
 
-- **Server Steps**: [View here](./server/README.md)  
+- **Server Steps**: [View here](./server/README.md)
 - **Client Steps**: [View here](./client/README.md)
+- **Proto File Steps**: [View here](./proto/README.md)
 
 ---
 
 ## Key Features
 
 ### Server
+
 - **gRPC Server**: The server uses gRPC for communication, with methods defined in `methods/index.js`.
 - **MongoDB Integration**: The server connects to a MongoDB database using Mongoose.
 - **Data Seeding**: Easily seed the database with initial data using the provided script.
 
 ### Client
+
 - The client interacts with the server via gRPC, which provides a user-friendly interface for interacting with the system.
 
 ---

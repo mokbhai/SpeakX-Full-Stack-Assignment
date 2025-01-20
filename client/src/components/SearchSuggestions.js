@@ -34,6 +34,7 @@ function SearchSuggestions({ query, onSelect }) {
     }, 300);
 
     return () => clearTimeout(debounceTimer);
+    // eslint-disable-next-line
   }, [query]);
 
   const fetchSuggestions = async () => {

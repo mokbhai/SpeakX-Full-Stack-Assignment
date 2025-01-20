@@ -17,7 +17,7 @@ const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const questionsProto = protoDescriptor.Questions;
 
 // Create gRPC server
-function startServer(grpcMethods) {
+function startGrpcServer(grpcMethods) {
   const server = new grpc.Server();
   server.addService(questionsProto.Questions.service, {
     ...grpcMethods,
@@ -36,4 +36,4 @@ function startServer(grpcMethods) {
   );
 }
 
-export default startServer;
+export default startGrpcServer;

@@ -2,18 +2,30 @@ import QuestionModel from "../schemas/questionSchema.js";
 import { QuestionType, AnagramType } from "../schemas/questionSchema.js";
 // import AnalyseData from "../seed/analyse.js";
 
-// Implement the Add RPC method
+// Just for testing
+// {
+//   a: number,
+//   b: number
+// }
 function add(call, callback) {
   const { a, b } = call.request;
   const result = a + b;
   callback(null, { result });
 }
 
+// Just for testing
+// {
+//   questionTypes: string[]
+// }
 function getQuestionTypes(call, callback) {
   const questionTypes = Object.values(QuestionType);
   callback(null, { questionTypes });
 }
 
+// {
+//   questions: object[],
+//   paginationInfo: object
+// }
 async function searchQuestion(call, callback) {
   try {
     const { title, type, pagination } = call.request;
@@ -25,8 +37,8 @@ async function searchQuestion(call, callback) {
     if (title) {
       // Use exact match instead of text search
       // query.title = title;
-      // for index search
-      // await QuestionModel.collection.createIndex({ title: "text" });
+
+      // for Regex search
       query.title = { $regex: title, $options: "i" };
     }
 
@@ -34,9 +46,7 @@ async function searchQuestion(call, callback) {
       query.type = QuestionType[type];
     }
 
-    // console.log("Query:", query);
-
-    // Use aggregation pipeline for efficient querying and pagination
+    // Used aggregation pipeline for efficient querying and pagination
     const aggregationPipeline = [
       { $match: query },
       {
@@ -114,6 +124,9 @@ async function searchQuestion(call, callback) {
   }
 }
 
+// {
+//   suggestions: {title: string, type: number}[]
+// }
 async function searchSuggestions(call, callback) {
   try {
     const { query } = call.request;

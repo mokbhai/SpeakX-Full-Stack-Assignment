@@ -26,19 +26,19 @@ services:
     networks:
       - grpc-network
 
-  # client:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/client/Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./client:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - server
-  #   networks:
-  #     - grpc-network
+  client:
+    build:
+      context: .
+      dockerfile: docker/client/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    networks:
+      - grpc-network
 
 networks:
   grpc-network:
