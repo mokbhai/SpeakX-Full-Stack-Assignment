@@ -135,5 +135,127 @@ proto.Questions.QuestionsPromiseClient.prototype.add =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Questions.GetQuestionTypesRequest,
+ *   !proto.Questions.GetQuestionTypesResponse>}
+ */
+const methodDescriptor_Questions_GetQuestionTypes = new grpc.web.MethodDescriptor(
+  '/Questions.Questions/GetQuestionTypes',
+  grpc.web.MethodType.UNARY,
+  proto.Questions.GetQuestionTypesRequest,
+  proto.Questions.GetQuestionTypesResponse,
+  /**
+   * @param {!proto.Questions.GetQuestionTypesRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.Questions.GetQuestionTypesResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Questions.GetQuestionTypesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.Questions.GetQuestionTypesResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.Questions.GetQuestionTypesResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.Questions.QuestionsClient.prototype.getQuestionTypes =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Questions.Questions/GetQuestionTypes',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_GetQuestionTypes,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Questions.GetQuestionTypesRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.Questions.GetQuestionTypesResponse>}
+ *     Promise that resolves to the response
+ */
+proto.Questions.QuestionsPromiseClient.prototype.getQuestionTypes =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Questions.Questions/GetQuestionTypes',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_GetQuestionTypes);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Questions.SearchQuestionRequest,
+ *   !proto.Questions.SearchQuestionResponse>}
+ */
+const methodDescriptor_Questions_SearchQuestion = new grpc.web.MethodDescriptor(
+  '/Questions.Questions/SearchQuestion',
+  grpc.web.MethodType.UNARY,
+  proto.Questions.SearchQuestionRequest,
+  proto.Questions.SearchQuestionResponse,
+  /**
+   * @param {!proto.Questions.SearchQuestionRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.Questions.SearchQuestionResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Questions.SearchQuestionRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.Questions.SearchQuestionResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.Questions.SearchQuestionResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.Questions.QuestionsClient.prototype.searchQuestion =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Questions.Questions/SearchQuestion',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_SearchQuestion,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Questions.SearchQuestionRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.Questions.SearchQuestionResponse>}
+ *     Promise that resolves to the response
+ */
+proto.Questions.QuestionsPromiseClient.prototype.searchQuestion =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Questions.Questions/SearchQuestion',
+      request,
+      metadata || {},
+      methodDescriptor_Questions_SearchQuestion);
+};
+
+
 module.exports = proto.Questions;
 

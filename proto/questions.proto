@@ -5,7 +5,9 @@ package Questions;
 // Questions service definition
 service Questions {
   // Add method takes two numbers and returns their sum
-  rpc Add (AddRequest) returns (AddResponse) {}
+  rpc Add (AddRequest) returns (AddResponse) {} // This is to test the gRPC connection
+  rpc GetQuestionTypes (GetQuestionTypesRequest) returns (GetQuestionTypesResponse) {}
+  rpc SearchQuestion (SearchQuestionRequest) returns (SearchQuestionResponse) {}
 }
 
 // Request message containing two numbers to add
@@ -17,4 +19,82 @@ message AddRequest {
 // Response message containing the result
 message AddResponse {
   int32 result = 1;
+} 
+
+message GetQuestionTypesRequest {}
+
+message GetQuestionTypesResponse {
+  repeated string questionTypes = 1;
+}
+
+// Enum for question types
+enum QuestionType {
+  UNKNOWN = 0;
+  ANAGRAM = 1;
+  MCQ = 2;
+  READ_ALONG = 3;
+  CONTENT_ONLY = 4;
+  CONVERSATION = 5;
+}
+
+// Enum for anagram types
+enum AnagramType {
+  UNSPECIFIED = 0;
+  WORD = 1;
+  SENTENCE = 2;
+}
+
+// Message for anagram blocks
+message AnagramBlock {
+  string text = 1;
+  bool showInOption = 2;
+  bool isAnswer = 3;
+}
+
+// Message for MCQ options
+message McqOption {
+  string text = 1;
+  bool isCorrectAnswer = 2;
+}
+
+// Main Question message
+message Question {
+  string id = 1;
+  string title = 2;
+  QuestionType type = 3;
+  string solution = 4;
+  string siblingId = 5;
+  AnagramType anagramType = 6;
+  repeated AnagramBlock blocks = 7;
+  repeated McqOption options = 8;
+  string createdAt = 9;
+}
+
+// Pagination message
+message PaginationRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+// Request message containing filters to search for questions
+message SearchQuestionRequest {
+  optional string title = 1;
+  optional QuestionType type = 2;
+  optional PaginationRequest pagination = 3;
+}
+
+// Response message containing the result with pagination
+message SearchQuestionResponse {
+  repeated Question questions = 1;
+  PaginationInfo paginationInfo = 2;
+}
+
+// Pagination info for response
+message PaginationInfo {
+  int32 currentPage = 1;
+  int32 totalPages = 2;
+  int32 totalItems = 3;
+  int32 itemsPerPage = 4;
+  bool hasNextPage = 5;
+  bool hasPreviousPage = 6;
 } 

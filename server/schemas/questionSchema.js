@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const QuestionType = {
+export const QuestionType = {
   ANAGRAM: "ANAGRAM",
   MCQ: "MCQ",
   READ_ALONG: "READ_ALONG",
@@ -8,7 +8,7 @@ const QuestionType = {
   CONVERSATION: "CONVERSATION",
 };
 
-const AnagramType = {
+export const AnagramType = {
   WORD: "WORD",
   SENTENCE: "SENTENCE",
 };
@@ -91,6 +91,5 @@ const questionSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
 
 export default mongoose.model("Question", questionSchema);

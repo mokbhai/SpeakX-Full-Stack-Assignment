@@ -109,6 +109,11 @@ class AnalyseData {
 
     return structure;
   }
+
+  getQuestionById(id) {
+    if (!this.data) return null;
+    return this.data.find((q) => q._id.$oid === id);
+  }
 }
 
 // Example usage:
