@@ -23,16 +23,18 @@ async function searchQuestion(call, callback) {
     // Build query object with only defined filters
     const query = {};
     if (title) {
-      // Create text index for efficient text search
-      await QuestionModel.collection.createIndex({ title: "text" });
-      query.$text = { $search: title };
+      // Use exact match instead of text search
+      query.title = title;
+      // for index search
+      // await QuestionModel.collection.createIndex({ title: "text" });
+      // query.$text = { $search: title };
     }
 
     if (type !== undefined && type !== 0) {
       query.type = QuestionType[type];
     }
 
-    // console.log(query);
+    // console.log("Query:", query);
 
     // Use aggregation pipeline for efficient querying and pagination
     const aggregationPipeline = [
@@ -49,7 +51,16 @@ async function searchQuestion(call, callback) {
                 id: { $toString: "$_id" },
                 title: 1,
                 type: {
-                  $indexOfArray: [Object.values(QuestionType), "$type"],
+                  $switch: {
+                    branches: [
+                      { case: { $eq: ["$type", "ANAGRAM"] }, then: 1 },
+                      { case: { $eq: ["$type", "MCQ"] }, then: 2 },
+                      { case: { $eq: ["$type", "READ_ALONG"] }, then: 3 },
+                      { case: { $eq: ["$type", "CONTENT_ONLY"] }, then: 4 },
+                      { case: { $eq: ["$type", "CONVERSATION"] }, then: 5 },
+                    ],
+                    default: 0,
+                  },
                 },
                 solution: { $ifNull: ["$solution", ""] },
                 siblingId: {
@@ -110,7 +121,6 @@ async function searchQuestion(call, callback) {
 //   try {
 //     const question = await QuestionModel.findById("665568f4ac3f6205c943a937");
 //     // const question = analyser.getQuestionsByType("anagram");
-
 //     console.log(question);
 //     callback(null, {
 //       questions: question,
