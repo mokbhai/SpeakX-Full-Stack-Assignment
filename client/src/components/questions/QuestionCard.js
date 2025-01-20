@@ -1,9 +1,6 @@
 import React from "react";
 import AnagramQuestion from "./AnagramQuestion.js";
 import MCQQuestion from "./MCQQuestion.js";
-import ReadAlongQuestion from "./ReadAlongQuestion.js";
-import ContentOnlyQuestion from "./ContentOnlyQuestion.js";
-import ConversationQuestion from "./ConversationQuestion.js";
 import { QuestionType } from "../../grpc/questions_pb";
 import { BiCheckSquare, BiBook, BiNote, BiConversation } from "react-icons/bi";
 import { PiPuzzlePiece } from "react-icons/pi";
@@ -45,11 +42,11 @@ function QuestionCard({ question }) {
       case QuestionType.MCQ:
         return <MCQQuestion question={question} />;
       case QuestionType.READ_ALONG:
-        return <ReadAlongQuestion question={question} />;
+        return <> </>;
       case QuestionType.CONTENT_ONLY:
-        return <ContentOnlyQuestion question={question} />;
+        return <> </>;
       case QuestionType.CONVERSATION:
-        return <ConversationQuestion question={question} />;
+        return <> </>;
       default:
         return <p>Unknown question type ({question.getType()})</p>;
     }
