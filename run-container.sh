@@ -4,4 +4,4 @@
 ./proto-gen.sh
 
 # run the docker compose file
-docker-compose down && docker-compose up --build
+docker-compose down && docker-compose up -d --build

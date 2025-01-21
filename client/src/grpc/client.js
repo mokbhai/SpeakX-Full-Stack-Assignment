@@ -8,9 +8,14 @@ import {
 } from "./questions_pb";
 
 const client = new QuestionsClient(
-  "https://grpc-server.impressment.in/",
+  "localhost:8080",
   null,
-  null
+  {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "X-Requested-With": "XMLHttpRequest",
+  }
 );
 
 export const QuestionsService = {
