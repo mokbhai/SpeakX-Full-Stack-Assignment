@@ -3,7 +3,7 @@ import { QuestionsService } from "./grpc/client";
 import { QuestionType } from "./grpc/questions_pb";
 import QuestionCard from "./components/questions/QuestionCard";
 import Pagination from "./components/common/Pagination";
-import { BiSearch, BiFilterAlt } from "react-icons/bi";
+import { BiSearch, BiFilterAlt, BiSelectMultiple } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
 import SearchSuggestions from "./components/SearchSuggestions";
@@ -24,6 +24,7 @@ function App() {
   });
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [displayAllQuestionTypes, setDisplayAllQuestionTypes] = useState(false);
 
   useEffect(() => {
     setQuestionTypes(Object.keys(QuestionType));
@@ -33,12 +34,20 @@ function App() {
     const pageFromUrl = parseInt(searchParams.get("page")) || 0;
     const pageSizeFromUrl =
       parseInt(searchParams.get("pageSize")) || pagination.itemsPerPage;
+    const showAllFromUrl = searchParams.get("showAll") === "true";
 
     setSelectedType(typeFromUrl);
     setSearchText(titleFromUrl);
+    setDisplayAllQuestionTypes(showAllFromUrl);
 
     // Initial search with URL parameters
-    fetchQuestions(typeFromUrl, titleFromUrl, pageFromUrl, pageSizeFromUrl);
+    fetchQuestions(
+      typeFromUrl,
+      titleFromUrl,
+      pageFromUrl,
+      pageSizeFromUrl,
+      showAllFromUrl
+    );
     // eslint-disable-next-line
   }, []);
 
@@ -46,7 +55,8 @@ function App() {
     type = undefined,
     title = "",
     page = 0,
-    pageSize = pagination.itemsPerPage
+    pageSize = pagination.itemsPerPage,
+    showAll = displayAllQuestionTypes
   ) => {
     setIsLoading(true);
     try {
@@ -57,6 +67,7 @@ function App() {
           page: page,
           limit: pageSize,
         },
+        displayAllQuestionTypes: showAll,
       });
 
       const questions = response.getQuestionsList();
@@ -82,48 +93,72 @@ function App() {
     type,
     title,
     page = 0,
-    pageSize = pagination.itemsPerPage
+    pageSize = pagination.itemsPerPage,
+    showAll = displayAllQuestionTypes
   ) => {
     const params = new URLSearchParams();
     if (type) params.set("type", type);
     if (title) params.set("title", title);
     if (page > 0) params.set("page", page.toString());
     if (pageSize !== 10) params.set("pageSize", pageSize.toString());
+    params.set("showAll", showAll.toString());
     setSearchParams(params);
+  };
+
+  const handleQuestionSearch = (params) => {
+    const {
+      type = selectedType,
+      title = searchText,
+      page = 0,
+      pageSize = pagination.itemsPerPage,
+      showAll = displayAllQuestionTypes,
+    } = params;
+
+    // Update URL and fetch questions
+    updateUrlParams(type, title, page, pageSize, showAll);
+    fetchQuestions(type, title, page, pageSize, showAll);
+  };
+
+  const handleSearch = (title = searchText) => {
+    handleQuestionSearch({ title });
   };
 
   const handleTypeChange = (e) => {
     setSelectedType(e.target.value);
-    updateUrlParams(e.target.value, searchText, 0, pagination.itemsPerPage);
-    fetchQuestions(e.target.value, searchText, 0, pagination.itemsPerPage);
+    handleQuestionSearch({ type: e.target.value });
   };
 
-  const handleSearch = (title = searchText) => {
-    updateUrlParams(selectedType, title, 0, pagination.itemsPerPage);
-    fetchQuestions(selectedType, title, 0, pagination.itemsPerPage);
+  const handlePageChange = (newPage) => {
+    handleQuestionSearch({ page: newPage });
+  };
+
+  const handlePageSizeChange = (newSize) => {
+    handleQuestionSearch({ pageSize: newSize });
+  };
+
+  const handleDisplayAllQuestionTypes = (e) => {
+    const newValue = e.target.checked;
+    setDisplayAllQuestionTypes(newValue);
+    handleQuestionSearch({ showAll: newValue });
   };
 
   const handleClear = () => {
     setSelectedType("");
     setSearchText("");
+    setDisplayAllQuestionTypes(false);
     setSearchParams(new URLSearchParams());
-    fetchQuestions();
+    handleQuestionSearch({
+      type: "",
+      title: "",
+      page: 0,
+      showAll: false,
+    });
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
-
-  const handlePageChange = (newPage) => {
-    updateUrlParams(selectedType, searchText, newPage, pagination.itemsPerPage);
-    fetchQuestions(selectedType, searchText, newPage);
-  };
-
-  const handlePageSizeChange = (newSize) => {
-    updateUrlParams(selectedType, searchText, 0, newSize);
-    fetchQuestions(selectedType, searchText, 0, newSize);
   };
 
   return (
@@ -134,6 +169,29 @@ function App() {
           <div className="flex items-center gap-2 mb-4 text-secondary-900">
             <BiFilterAlt className="h-5 w-5" />
             <h2 className="text-lg font-semibold">Filter Questions</h2>
+
+            {/* Display All Types Checkbox */}
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="displayAllTypes"
+                className="text-sm font-medium text-secondary-700 flex items-center gap-1"
+              >
+                [ Show All Question Types
+              </label>
+              <input
+                type="checkbox"
+                id="displayAllTypes"
+                checked={displayAllQuestionTypes}
+                onChange={handleDisplayAllQuestionTypes}
+                className="rounded border-secondary-300 text-primary-500 focus:ring-primary-500"
+              />
+              <label
+                htmlFor="displayAllTypes"
+                className="text-sm font-medium text-secondary-700 flex items-center gap-1"
+              >
+                ]
+              </label>
+            </div>
           </div>
 
           <div className="space-y-4 sm:space-y-0 sm:flex sm:gap-4 sm:items-end">
@@ -148,11 +206,17 @@ function App() {
                   value={selectedType}
                   onChange={handleTypeChange}
                 >
-                  {questionTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
+                  {displayAllQuestionTypes
+                    ? questionTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))
+                    : questionTypes.slice(0, 3).map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                 </select>
               </div>
             </div>
@@ -185,6 +249,8 @@ function App() {
               </div>
               <SearchSuggestions
                 query={searchText}
+                displayAllQuestionTypes={displayAllQuestionTypes}
+                type={selectedType}
                 onSelect={(title) => {
                   setSearchText(title);
                   handleSearch(title);

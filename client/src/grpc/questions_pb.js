@@ -1843,9 +1843,10 @@ proto.Questions.SearchQuestionRequest.prototype.toObject = function(opt_includeI
  */
 proto.Questions.SearchQuestionRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-title: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-type: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-pagination: (f = msg.getPagination()) && proto.Questions.PaginationRequest.toObject(includeInstance, f)
+title: jspb.Message.getFieldWithDefault(msg, 1, ""),
+type: jspb.Message.getFieldWithDefault(msg, 2, 0),
+pagination: (f = msg.getPagination()) && proto.Questions.PaginationRequest.toObject(includeInstance, f),
+displayallquestiontypes: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -1895,6 +1896,10 @@ proto.Questions.SearchQuestionRequest.deserializeBinaryFromReader = function(msg
       reader.readMessage(value,proto.Questions.PaginationRequest.deserializeBinaryFromReader);
       msg.setPagination(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisplayallquestiontypes(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1924,15 +1929,15 @@ proto.Questions.SearchQuestionRequest.prototype.serializeBinary = function() {
  */
 proto.Questions.SearchQuestionRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
-  if (f != null) {
+  f = message.getTitle();
+  if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = /** @type {!proto.Questions.QuestionType} */ (jspb.Message.getField(message, 2));
-  if (f != null) {
+  f = message.getType();
+  if (f !== 0.0) {
     writer.writeEnum(
       2,
       f
@@ -1944,6 +1949,13 @@ proto.Questions.SearchQuestionRequest.serializeBinaryToWriter = function(message
       3,
       f,
       proto.Questions.PaginationRequest.serializeBinaryToWriter
+    );
+  }
+  f = message.getDisplayallquestiontypes();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
     );
   }
 };
@@ -1963,25 +1975,7 @@ proto.Questions.SearchQuestionRequest.prototype.getTitle = function() {
  * @return {!proto.Questions.SearchQuestionRequest} returns this
  */
 proto.Questions.SearchQuestionRequest.prototype.setTitle = function(value) {
-  return jspb.Message.setField(this, 1, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.Questions.SearchQuestionRequest} returns this
- */
-proto.Questions.SearchQuestionRequest.prototype.clearTitle = function() {
-  return jspb.Message.setField(this, 1, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.Questions.SearchQuestionRequest.prototype.hasTitle = function() {
-  return jspb.Message.getField(this, 1) != null;
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1999,25 +1993,7 @@ proto.Questions.SearchQuestionRequest.prototype.getType = function() {
  * @return {!proto.Questions.SearchQuestionRequest} returns this
  */
 proto.Questions.SearchQuestionRequest.prototype.setType = function(value) {
-  return jspb.Message.setField(this, 2, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.Questions.SearchQuestionRequest} returns this
- */
-proto.Questions.SearchQuestionRequest.prototype.clearType = function() {
-  return jspb.Message.setField(this, 2, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.Questions.SearchQuestionRequest.prototype.hasType = function() {
-  return jspb.Message.getField(this, 2) != null;
+  return jspb.Message.setProto3EnumField(this, 2, value);
 };
 
 
@@ -2055,6 +2031,24 @@ proto.Questions.SearchQuestionRequest.prototype.clearPagination = function() {
  */
 proto.Questions.SearchQuestionRequest.prototype.hasPagination = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional bool displayAllQuestionTypes = 4;
+ * @return {boolean}
+ */
+proto.Questions.SearchQuestionRequest.prototype.getDisplayallquestiontypes = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.Questions.SearchQuestionRequest} returns this
+ */
+proto.Questions.SearchQuestionRequest.prototype.setDisplayallquestiontypes = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -2301,7 +2295,9 @@ proto.Questions.SearchSuggestionsRequest.prototype.toObject = function(opt_inclu
  */
 proto.Questions.SearchSuggestionsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-query: jspb.Message.getFieldWithDefault(msg, 1, "")
+query: jspb.Message.getFieldWithDefault(msg, 1, ""),
+displayallquestiontypes: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+type: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -2342,6 +2338,14 @@ proto.Questions.SearchSuggestionsRequest.deserializeBinaryFromReader = function(
       var value = /** @type {string} */ (reader.readString());
       msg.setQuery(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisplayallquestiontypes(value);
+      break;
+    case 3:
+      var value = /** @type {!proto.Questions.QuestionType} */ (reader.readEnum());
+      msg.setType(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2378,6 +2382,20 @@ proto.Questions.SearchSuggestionsRequest.serializeBinaryToWriter = function(mess
       f
     );
   }
+  f = message.getDisplayallquestiontypes();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
+  f = message.getType();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -2396,6 +2414,42 @@ proto.Questions.SearchSuggestionsRequest.prototype.getQuery = function() {
  */
 proto.Questions.SearchSuggestionsRequest.prototype.setQuery = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional bool displayAllQuestionTypes = 2;
+ * @return {boolean}
+ */
+proto.Questions.SearchSuggestionsRequest.prototype.getDisplayallquestiontypes = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.Questions.SearchSuggestionsRequest} returns this
+ */
+proto.Questions.SearchSuggestionsRequest.prototype.setDisplayallquestiontypes = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * optional QuestionType type = 3;
+ * @return {!proto.Questions.QuestionType}
+ */
+proto.Questions.SearchSuggestionsRequest.prototype.getType = function() {
+  return /** @type {!proto.Questions.QuestionType} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {!proto.Questions.QuestionType} value
+ * @return {!proto.Questions.SearchSuggestionsRequest} returns this
+ */
+proto.Questions.SearchSuggestionsRequest.prototype.setType = function(value) {
+  return jspb.Message.setProto3EnumField(this, 3, value);
 };
 
 

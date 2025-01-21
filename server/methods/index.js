@@ -7,28 +7,28 @@ import { QuestionType, AnagramType } from "../schemas/questionSchema.js";
 //   a: number,
 //   b: number
 // }
-function add(call, callback) {
+const add = async (call, callback) => {
   const { a, b } = call.request;
   const result = a + b;
   callback(null, { result });
-}
+};
 
 // Just for testing
 // {
 //   questionTypes: string[]
 // }
-function getQuestionTypes(call, callback) {
+const getQuestionTypes = async (call, callback) => {
   const questionTypes = Object.values(QuestionType);
   callback(null, { questionTypes });
-}
+};
 
 // {
 //   questions: object[],
 //   paginationInfo: object
 // }
-async function searchQuestion(call, callback) {
+const searchQuestion = async (call, callback) => {
   try {
-    const { title, type, pagination } = call.request;
+    const { title, type, pagination, displayAllQuestionTypes } = call.request;
     const page = pagination?.page || 0;
     const limit = pagination?.limit || 10;
 
@@ -36,15 +36,23 @@ async function searchQuestion(call, callback) {
     const query = {};
     if (title) {
       // for exact match
-      // query.title = title;
+      query.title = title;
 
       // for Regex search
-      query.title = { $regex: title, $options: "i" };
+      // query.title = { $regex: title, $options: "i" };
     }
 
     if (type !== undefined && type !== 0 && QuestionType[type] !== undefined) {
       query.type = QuestionType[type];
     }
+
+    if (!displayAllQuestionTypes && query.type === undefined) {
+      query.type = {
+        $in: [QuestionType.ANAGRAM, QuestionType.MCQ],
+      };
+    }
+
+    // console.log(query);
 
     // Used aggregation pipeline for efficient querying and pagination
     const aggregationPipeline = [
@@ -119,30 +127,40 @@ async function searchQuestion(call, callback) {
       },
     });
   } catch (error) {
-    console.error("Search Question Error:", error);
-    callback(error);
+    console.error("Error in searchQuestion:", error);
+    throw error;
   }
-}
+};
 
 // {
 //   suggestions: {title: string, type: number}[]
 // }
-async function searchSuggestions(call, callback) {
+const searchSuggestions = async (call, callback) => {
   try {
-    const { query } = call.request;
-    const suggestions = await QuestionModel.find(
-      { title: { $regex: query, $options: "i" } },
-      { title: 1, _id: 0, type: 1 }
-    ).limit(2);
+    const { query, displayAllQuestionTypes, type } = call.request;
 
-    // console.log(suggestions);
+    const mongoQuery = { title: { $regex: query, $options: "i" } };
+
+    if (type !== undefined && type !== 0 && QuestionType[type] !== undefined) {
+      mongoQuery.type = QuestionType[type];
+    }
+
+    if (!displayAllQuestionTypes && !mongoQuery.type) {
+      mongoQuery.type = { $in: [QuestionType.ANAGRAM, QuestionType.MCQ] };
+    }
+
+    const suggestions = await QuestionModel.find(mongoQuery, {
+      title: 1,
+      _id: 0,
+      type: 1,
+    }).limit(4);
 
     callback(null, { suggestions });
   } catch (error) {
     console.error("Search Suggestions Error:", error);
     callback(error);
   }
-}
+};
 
 // get by file
 // const analyser = new AnalyseData();

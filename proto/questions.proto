@@ -79,9 +79,10 @@ message PaginationRequest {
 
 // Request message containing filters to search for questions
 message SearchQuestionRequest {
-  optional string title = 1;
-  optional QuestionType type = 2;
-  optional PaginationRequest pagination = 3;
+  string title = 1;
+  QuestionType type = 2;
+  PaginationRequest pagination = 3;
+  bool displayAllQuestionTypes = 4;
 }
 
 // Response message containing the result with pagination
@@ -92,6 +93,8 @@ message SearchQuestionResponse {
 
 message SearchSuggestionsRequest {
   string query = 1;
+  bool displayAllQuestionTypes = 2;
+  QuestionType type = 3;
 }
 
 message Suggestion {

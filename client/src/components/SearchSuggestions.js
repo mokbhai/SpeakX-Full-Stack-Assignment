@@ -3,7 +3,12 @@ import { BiSearch } from "react-icons/bi";
 import { QuestionsService } from "../grpc/client";
 import { QuestionType } from "../grpc/questions_pb";
 
-function SearchSuggestions({ query, onSelect }) {
+function SearchSuggestions({
+  query,
+  onSelect,
+  displayAllQuestionTypes = false,
+  type = 0,
+}) {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -40,7 +45,11 @@ function SearchSuggestions({ query, onSelect }) {
   const fetchSuggestions = async () => {
     try {
       setLoading(true);
-      const response = await QuestionsService.searchSuggestions(query);
+      const response = await QuestionsService.searchSuggestions({
+        query,
+        displayAllQuestionTypes,
+        type: type ? parseInt(QuestionType[type]) : 0,
+      });
       const suggestionsList = response.getSuggestionsList();
       setSuggestions(suggestionsList);
       setShowSuggestions(true);
