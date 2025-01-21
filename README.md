@@ -14,7 +14,8 @@ Welcome to the **SpeakX Placement Assignment**! This project demonstrates the im
 
 ---
 
-### Step 2. IF you want to run in one step then in docker-compose.yml file uncomment the client section and run the following command: (Efficent for pcs with high ram)
+### Step 2. If you want to run in one-step 
+- then in docker-compose.yml file uncomment the client section and run the following command: (Efficient for pcs with high ram)
 
 ```bash
 chmod +x ./run-container.sh ./proto-gen.sh && ./run-container.sh
@@ -32,15 +33,18 @@ To simplify the setup, you can use Docker-Compose to run the project. Follow the
    ```
 2. This will set up the server, and proxy automatically.
 
-3. add url of proxy in client/src/grpc/client.js or you can use the default url `https://grpc-server.impressment.in/`
+3. Add the URL of the proxy in client/src/grpc/client.js or you can use the default URL `https://grpc-server.impressment.in/`
+
 4. Start the client by running the following command:
    ```bash
    cd client
+   npm install
    npm start
    ```
    or build the client by running the following command:
    ```bash
    cd client
+   npm install
    npm run build
    npm install -g serve
    sudo npx serve -s build
