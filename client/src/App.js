@@ -7,7 +7,7 @@ import { BiSearch, BiFilterAlt } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
 import SearchSuggestions from "./components/SearchSuggestions";
-import LoadingAnimation from './components/common/LoadingAnimation';
+import LoadingAnimation from "./components/common/LoadingAnimation";
 
 function App() {
   const [questionTypes, setQuestionTypes] = useState([]);
@@ -243,8 +243,8 @@ function App() {
                     No questions found
                   </h3>
                   <p className="text-secondary-500">
-                    Try adjusting your search or filter to find what you're looking
-                    for.
+                    Try adjusting your search or filter to find what you're
+                    looking for.
                   </p>
                 </div>
               )}
