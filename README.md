@@ -20,7 +20,7 @@ To simplify the setup, you can use Docker-Compose to run the project. Follow the
 
 1. Run the following command to start the containers:
    ```bash
-   ./run-container.sh
+   chmod +x ./run-container.sh ./proto-gen.sh && ./run-container.sh
    ```
 2. This will set up the server, frontend, and database services automatically.
 
