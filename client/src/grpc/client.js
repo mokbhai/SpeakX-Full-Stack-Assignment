@@ -8,7 +8,7 @@ import {
 } from "./questions_pb";
 
 const client = new QuestionsClient(
-  "localhost:8080",
+  "https://grpc-server.impressment.in/",
   null,
   {
     "Access-Control-Allow-Origin": "*",
