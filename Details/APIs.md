@@ -8,9 +8,15 @@ I started by setting up a Node.js server using the `grpc/grpc-js` framework, whi
 
 Code: [Click Here](../server/config/gRPC.js)
 
-### 2. Defining the gRPC Service
+### 2. Defining the schemas
 
-Next, I defined the gRPC service in a `.proto` file. This file specifies the service and the methods available, including the search method.
+First I analyzed the question data and defined the schemas for the questions [analysed_output](../server/seed/speakx_questions_analysis.js).
+
+Code: [Click Here](../server/schemas/questionSchema.js)
+
+### 3. Defining the Proto File
+
+Next, I defined the Proto File `questions.proto` which specifies the request and response messages for the search method.
 
 Code: [Click Here](../proto/questions.proto)
 
@@ -37,12 +43,6 @@ message Question {
     string type = 3;
 }
 ```
-
-### 3. Defining the schemas
-
-First I analyzed the question data and defined the schemas for the questions [analysed_output](../server/seed/speakx_questions_analysis.js).
-
-Code: [Click Here](../server/schemas/questionSchema.js)
 
 ### 4. Implementing the Search Functionality
 

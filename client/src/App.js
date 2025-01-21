@@ -7,6 +7,7 @@ import { BiSearch, BiFilterAlt } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
 import SearchSuggestions from "./components/SearchSuggestions";
+import LoadingAnimation from './components/common/LoadingAnimation';
 
 function App() {
   const [questionTypes, setQuestionTypes] = useState([]);
@@ -22,6 +23,7 @@ function App() {
     hasPreviousPage: false,
   });
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setQuestionTypes(Object.keys(QuestionType));
@@ -40,37 +42,40 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
-  const fetchQuestions = (
+  const fetchQuestions = async (
     type = undefined,
     title = "",
     page = 0,
     pageSize = pagination.itemsPerPage
   ) => {
-    QuestionsService.searchQuestion({
-      title: title,
-      type: type !== undefined ? QuestionType[type] : undefined,
-      pagination: {
-        page: page,
-        limit: pageSize,
-      },
-    })
-      .then((response) => {
-        const questions = response.getQuestionsList();
-        const paginationInfo = response.getPaginationinfo();
-
-        setPagination({
-          currentPage: paginationInfo.getCurrentpage(),
-          totalPages: paginationInfo.getTotalpages(),
-          totalItems: paginationInfo.getTotalitems(),
-          itemsPerPage: paginationInfo.getItemsperpage(),
-          hasNextPage: paginationInfo.getHasnextpage(),
-          hasPreviousPage: paginationInfo.getHaspreviouspage(),
-        });
-        setQuestions(questions);
-      })
-      .catch((error) => {
-        console.error("Error searching questions:", error);
+    setIsLoading(true);
+    try {
+      const response = await QuestionsService.searchQuestion({
+        title: title,
+        type: type !== undefined ? QuestionType[type] : undefined,
+        pagination: {
+          page: page,
+          limit: pageSize,
+        },
       });
+
+      const questions = response.getQuestionsList();
+      const paginationInfo = response.getPaginationinfo();
+
+      setPagination({
+        currentPage: paginationInfo.getCurrentpage(),
+        totalPages: paginationInfo.getTotalpages(),
+        totalItems: paginationInfo.getTotalitems(),
+        itemsPerPage: paginationInfo.getItemsperpage(),
+        hasNextPage: paginationInfo.getHasnextpage(),
+        hasPreviousPage: paginationInfo.getHaspreviouspage(),
+      });
+      setQuestions(questions);
+    } catch (error) {
+      console.error("Error searching questions:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateUrlParams = (
@@ -85,6 +90,12 @@ function App() {
     if (page > 0) params.set("page", page.toString());
     if (pageSize !== 10) params.set("pageSize", pageSize.toString());
     setSearchParams(params);
+  };
+
+  const handleTypeChange = (e) => {
+    setSelectedType(e.target.value);
+    updateUrlParams(e.target.value, searchText, 0, pagination.itemsPerPage);
+    fetchQuestions(e.target.value, searchText, 0, pagination.itemsPerPage);
   };
 
   const handleSearch = (title = searchText) => {
@@ -135,7 +146,7 @@ function App() {
                 <select
                   className="w-full rounded-lg border-secondary-300 bg-white py-2 pl-3 pr-10 text-sm shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                   value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  onChange={handleTypeChange}
                 >
                   {questionTypes.map((type) => (
                     <option key={type} value={type}>
@@ -210,36 +221,43 @@ function App() {
             </div>
           </div>
 
-          {/* Questions List */}
-          <div className="space-y-4">
-            {questions.map((question) => (
-              <QuestionCard key={question.getId()} question={question} />
-            ))}
-          </div>
-
-          {/* Empty State */}
-          {questions.length === 0 && (
-            <div className="text-center py-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 mb-4">
-                <BiSearch className="h-8 w-8 text-secondary-400" />
+          {/* Loading State */}
+          {isLoading ? (
+            <LoadingAnimation className="py-12" />
+          ) : (
+            <>
+              {/* Questions List */}
+              <div className="space-y-4">
+                {questions.map((question) => (
+                  <QuestionCard key={question.getId()} question={question} />
+                ))}
               </div>
-              <h3 className="text-lg font-medium text-secondary-900 mb-1">
-                No questions found
-              </h3>
-              <p className="text-secondary-500">
-                Try adjusting your search or filter to find what you're looking
-                for.
-              </p>
-            </div>
-          )}
 
-          {/* Pagination */}
-          {questions.length > 0 && (
-            <Pagination
-              pagination={pagination}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-            />
+              {/* Empty State */}
+              {questions.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 mb-4">
+                    <BiSearch className="h-8 w-8 text-secondary-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-secondary-900 mb-1">
+                    No questions found
+                  </h3>
+                  <p className="text-secondary-500">
+                    Try adjusting your search or filter to find what you're looking
+                    for.
+                  </p>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {questions.length > 0 && (
+                <Pagination
+                  pagination={pagination}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
