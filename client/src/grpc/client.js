@@ -7,7 +7,11 @@ import {
   SearchSuggestionsRequest,
 } from "./questions_pb";
 
-const client = new QuestionsClient("http://localhost:8080", null, null);
+const client = new QuestionsClient(
+  "https://grpc-server.impressment.in/",
+  null,
+  null
+);
 
 export const QuestionsService = {
   add: (a, b) => {

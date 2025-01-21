@@ -4,9 +4,9 @@ Welcome to the **SpeakX Placement Assignment**! This project demonstrates the im
 
 ---
 
-## Setup
+## Setup 2 ways
 
-### 1. Configure the `.env` File
+### Step 1. Configure the `.env` File (for both)
 
 - Copy the `.env.example` file and rename it to `./server/.env`.
 - Add your **MongoDB URI** to the `.env` file.  
@@ -14,7 +14,15 @@ Welcome to the **SpeakX Placement Assignment**! This project demonstrates the im
 
 ---
 
-### 2. Run the Project Using Docker-Compose
+### Step 2. IF you want to run in one step then in docker-compose.yml file uncomment the client section and run the following command: (Efficent for pcs with high ram)
+
+```bash
+chmod +x ./run-container.sh ./proto-gen.sh && ./run-container.sh
+```
+
+---
+
+### Step 2. Run the Project Using Docker-Compose
 
 To simplify the setup, you can use Docker-Compose to run the project. Follow the steps below:
 
@@ -22,7 +30,21 @@ To simplify the setup, you can use Docker-Compose to run the project. Follow the
    ```bash
    chmod +x ./run-container.sh ./proto-gen.sh && ./run-container.sh
    ```
-2. This will set up the server, frontend, and database services automatically.
+2. This will set up the server, and proxy automatically.
+
+3. add url of proxy in client/src/grpc/client.js or you can use the default url `https://grpc-server.impressment.in/`
+4. Start the client by running the following command:
+   ```bash
+   cd client
+   npm start
+   ```
+   or build the client by running the following command:
+   ```bash
+   cd client
+   npm run build
+   npm install -g serve
+   sudo npx serve -s build
+   ```
 
 For a detailed explanation of the Docker-Compose implementation, refer to [this guide](https://github.com/mokbhai/SiddhProject/blob/main/NodeJs/gRPC/client-to-server/README_Improved_By_ChatGPT.md).
 
