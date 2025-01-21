@@ -35,7 +35,7 @@ async function searchQuestion(call, callback) {
     // Build query object with only defined filters
     const query = {};
     if (title) {
-      // Use exact match instead of text search
+      // for exact match
       // query.title = title;
 
       // for Regex search
