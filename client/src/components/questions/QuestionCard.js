@@ -38,7 +38,16 @@ function QuestionCard({ question }) {
   const renderQuestionContent = () => {
     switch (question.getType()) {
       case QuestionType.ANAGRAM:
-        return <AnagramQuestion question={question} />;
+        return (
+          <AnagramQuestion
+            question={question}
+            correctAnswer={question
+              .getBlocksList()
+              .filter((block) => block.getIsanswer())
+              .map((block) => block.getText())
+              .join(" ")}
+          />
+        );
       case QuestionType.MCQ:
         return <MCQQuestion question={question} />;
       case QuestionType.READ_ALONG:
