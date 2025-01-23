@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BiText, BiCheck, BiShuffle } from "react-icons/bi";
 import shuffleArray from "./shuffleArray";
 
-function AnagramQuestion({ question }) {
+function AnagramQuestion({ question, correctAnswer }) {
   const [blocks, setBlocks] = useState(() => {
     const initialBlocks = question.getBlocksList();
     return shuffleArray(initialBlocks);
@@ -36,19 +36,20 @@ function AnagramQuestion({ question }) {
   };
 
   const checkAnswer = () => {
-    const userAnswer = blocks.map((block) => block.getText()).join(" ");
-    const correctAnswer = question
-      .getBlocksList()
+    const userAnswer = blocks
       .filter((block) => block.getIsanswer())
       .map((block) => block.getText())
       .join(" ");
 
     setIsCorrect(userAnswer === correctAnswer);
+    console.log("userAnswer", userAnswer);
+    console.log("correctAnswer", correctAnswer);
     setIsChecked(true);
   };
 
   const resetBlocks = () => {
-    const shuffledBlocks = shuffleArray(question.getBlocksList());
+    const initialBlocks = question.getBlocksList();
+    const shuffledBlocks = shuffleArray(initialBlocks);
     setBlocks(shuffledBlocks);
     setIsChecked(false);
     setIsCorrect(false);
